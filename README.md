@@ -1,20 +1,75 @@
+# Random Service
+
+Sample Random numbers infrastructure with latest AWS API Gateway2 + Lambda function - everything deployed with terraform
+
 ## Requirements
 
-[terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+[aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+[terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)<br>
 [nodejs](https://nodejs.org/it/download/current/)
 
-## Providers
+## Run
+
+<p>It's possibile to run tests inside the code root: `random-service` launching form cli: `npm run test`.<br>
+To deploy the stack, you must have an AWS profile with enough permissions for CloudWatch Logs, Lambda, API Gateway, IAM roles.<br>
+Before lanching the command `terraform init` from CLI, I advice to use a `terraform.tfvars` configured file; thus the deployment process is fluid.<br>
+Here is a `terraform.tfvars` example:<br></p>
+
+```bash
+echo 'region = "eu-south-1"
+profile = "default"
+environments = ["develop"]
+app_name = "stillfront-random-service"
+routes = [{
+ "model": "Distribution", 
+ "method": "POST",
+ "resource": "/distribution"
+}]' >> terraform.tfvars
+```
+
+<p>The profile variable refers to local aws cli profile with `aws_access_key_id` and `aws_secret_access_key` already set.<br>
+If you run the bash command `cat ~/aws/credentials`, it would return the set of profile name(s) with credentials<br>
+example output:<br>
+[default]
+aws_access_key_id = *your access key id*
+aws_secret_access_key = *your secret key*</p>
+
+### Deployment
+
+<p>After the initial setup, it's possible to deploy and test the stack.</p>
+
+```bash
+terraform init
+terraform plan
+terraform apply -auto-approve
+```
+
+<p>Grab the output baseurls endpoint and enjoy testing it :)<p>
+
+```bash
+curl --location --request POST '<baseurl>/distribution' \
+--header 'Content-Type: application/json' \
+--data-raw '{ 
+  "total": 2000,
+  "clusters": 15,
+  "minPercentage": 4
+}'
+```
+
+## Terraform architecture
+
+### Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_archive"></a> [archive](#provider\_archive) | 2.2.0 |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 3.51.0 |
 
-## Modules
+### Modules
 
 No modules.
 
-## Resources
+### Resources
 
 | Name | Type |
 |------|------|
@@ -31,7 +86,7 @@ No modules.
 | [aws_s3_bucket_object.lambda_object](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object) | resource |
 | [archive_file.lambda_radom_service](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 
-## Inputs
+### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
@@ -41,7 +96,7 @@ No modules.
 | <a name="input_region"></a> [region](#input\_region) | AWS deployment region | `string` | `"eu-south-1"` | no |
 | <a name="input_routes"></a> [routes](#input\_routes) | Available routes to send requests to | <pre>list(object({<br>  method = string<br>  resource = string<br>  model = string<br> }))</pre> | n/a | yes |
 
-## Outputs
+### Outputs
 
 | Name | Description |
 |------|-------------|
