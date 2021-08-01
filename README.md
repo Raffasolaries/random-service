@@ -4,7 +4,7 @@ Sample Random numbers infrastructure with latest AWS API Gateway2 + Lambda funct
 
 ## Requirements
 
-[aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+[aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)<br>
 [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)<br>
 [nodejs](https://nodejs.org/it/download/current/)
 
