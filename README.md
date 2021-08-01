@@ -56,6 +56,8 @@ curl --location --request POST '<baseurl>/distribution' \
 }'
 ```
 
+<p>To destroy the stack launch the command `terraform destroy`</p>
+
 ## Terraform architecture
 
 ### Providers
