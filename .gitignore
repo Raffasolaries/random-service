@@ -35,3 +35,5 @@ terraform.rc
 
 # code distribution
 *.zip
+# node dependecies
+**/node_modules

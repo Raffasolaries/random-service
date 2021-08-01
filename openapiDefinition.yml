@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: ${app_name}
+  version: 1.0.0
+x-amazon-apigateway-request-validators:
+  all:
+    validateRequestBody: true
+    validateRequestParameters: false
+  params-only:
+    validateRequestBody: true
+    validateRequestParameters: true
+x-amazon-apigateway-request-validator: all
+paths:
+  /distribution:
+    post:
+      x-amazon-apigateway-request-validator: all
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestBodyModel"
+        required: true
+      responses:
+        200:
+          description: Result
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ResponseBodyModel"
+      x-amazon-apigateway-auth:
+        type: none
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/distribution"
+components:
+  x-amazon-apigateway-integrations:
+    distribution:
+      uri: ${lambda_arn}
+      passthroughBehavior: never
+      httpMethod: POST
+      type: aws_proxy
+      payloadFormatVersion: 2.0
+      requestTemplates: 
+        application/json: |
+          "#set ($root=$input.json('$')) { \"total\": \"$root.total\", \"clusters\": \"$root.clusters\", \"minPercentage\": \"$root.minPercentage\" }"
+      responses:
+        2\\d{2}:
+          statusCode: 200
+        default:
+          statusCode: 400
+  schemas:
+    RequestBodyModel:
+      type: object
+      properties:
+        total:
+          type: integer
+        clusters:
+          type: integer
+        minPercentage:
+          type: integer
+      required:
+        - total
+        - clusters
+    ResponseBodyModel:
+      type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string

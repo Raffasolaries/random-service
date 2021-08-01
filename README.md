@@ -1,9 +1,7 @@
-# random-service
-Stack which creates API Gateway + Lambda service that handles random numbers service
-
 ## Requirements
 
-No requirements.
+[terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+[nodejs](https://nodejs.org/it/download/current/)
 
 ## Providers
 
@@ -21,8 +19,6 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_apigatewayv2_api.lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_api) | resource |
-| [aws_apigatewayv2_integration.lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_integration) | resource |
-| [aws_apigatewayv2_route.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_route) | resource |
 | [aws_apigatewayv2_stage.lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_stage) | resource |
 | [aws_cloudwatch_log_group.api_gw](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.lambda_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
@@ -43,6 +39,7 @@ No modules.
 | <a name="input_environments"></a> [environments](#input\_environments) | referral environments | `list` | n/a | yes |
 | <a name="input_profile"></a> [profile](#input\_profile) | AWS IAM user credentials | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | AWS deployment region | `string` | `"eu-south-1"` | no |
+| <a name="input_routes"></a> [routes](#input\_routes) | Available routes to send requests to | <pre>list(object({<br>  method = string<br>  resource = string<br>  model = string<br> }))</pre> | n/a | yes |
 
 ## Outputs
 

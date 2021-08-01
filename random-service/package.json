@@ -1,0 +1,30 @@
+{
+  "name": "random-service",
+  "version": "1.0.0",
+  "description": "simple services for random numbers",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Raffasolaries/random-service.git"
+  },
+  "keywords": [
+    "random",
+    "numbers"
+  ],
+  "author": "Raffaele Sollecito",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Raffasolaries/random-service/issues"
+  },
+  "homepage": "https://github.com/Raffasolaries/random-service#readme",
+  "dependencies": {
+    "jsonschema": "^1.4.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "jest-json-schema": "^5.0.0"
+  }
+}

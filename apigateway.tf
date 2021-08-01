@@ -1,14 +1,24 @@
+// creates the api gateway
 resource "aws_apigatewayv2_api" "lambda" {
-  name          = join("-", [var.app_name, "gw"])
-  protocol_type = "HTTP"
+ name          = join("-", [var.app_name, "gw"])
+ protocol_type = "HTTP"
+ body = templatefile("${path.module}/openapiDefinition.yml", {
+  region: var.region,
+  app_name: var.app_name,
+  lambda_arn: aws_lambda_function.main.invoke_arn
+ })
 }
-
+// creates all the REST API stages (ex. develop,staging,production ...)
 resource "aws_apigatewayv2_stage" "lambda" {
  count = length(var.environments)
  api_id = aws_apigatewayv2_api.lambda.id
 
  name        = element(var.environments, count.index)
  auto_deploy = true
+
+ stage_variables = {
+  "lambdaVersion" = element(var.environments, count.index)
+ }
 
  access_log_settings {
   destination_arn = aws_cloudwatch_log_group.api_gw.arn
@@ -28,28 +38,30 @@ resource "aws_apigatewayv2_stage" "lambda" {
   )
  }
 }
+// // binds the api gateway with lambda function
+// resource "aws_apigatewayv2_integration" "lambda" {
+//  api_id = aws_apigatewayv2_api.lambda.id
 
-resource "aws_apigatewayv2_integration" "lambda" {
- api_id = aws_apigatewayv2_api.lambda.id
+//  integration_uri    = aws_lambda_function.main.invoke_arn
+//  integration_type   = "AWS_PROXY"
+//  integration_method = "POST"
+// }
+// // creates the main api gateway route to request the defined service
+// resource "aws_apigatewayv2_route" "main" {
+//  count = length(var.routes)
+//  api_id = aws_apigatewayv2_api.lambda.id
 
- integration_uri    = aws_lambda_function.main.invoke_arn
- integration_type   = "AWS_PROXY"
- integration_method = "POST"
-}
-
-resource "aws_apigatewayv2_route" "main" {
- api_id = aws_apigatewayv2_api.lambda.id
-
- route_key = "POST /distribution"
- target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
-}
-
+//  route_key = join(" ", [var.routes[count.index].method, var.routes[count.index].resource])
+//  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+//  // srequest
+// }
+// creates the CloudWatch logs group to register api gateway accesses
 resource "aws_cloudwatch_log_group" "api_gw" {
  name = "/aws/api_gw/${aws_apigatewayv2_api.lambda.name}"
 
  retention_in_days = 30
 }
-
+// gives api gateway enough permissions to invoke lambda function
 resource "aws_lambda_permission" "api_gw" {
  statement_id  = "AllowExecutionFromAPIGateway"
  action        = "lambda:InvokeFunction"
