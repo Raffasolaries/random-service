@@ -1,4 +1,5 @@
-const { matchersWithOptions } = require('jest-json-schema');
+import { matchersWithOptions } from 'jest-json-schema';
+import * as index from '../src/index';
 expect.extend(matchersWithOptions({
  verbose: true
 }));
@@ -18,8 +19,8 @@ const responseSchema = {
   body: 'string'
  }
 };
-const index = require('./index');
 const lambdaProxyMock = {
+  "rawBody": "{\"total\":230,\"clusters\":15}",
   "body": "{\"total\":230,\"clusters\":15}",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
@@ -142,11 +143,11 @@ const lambdaProxyMock = {
     "protocol": "HTTP/1.1"
   }
 };
-const mockContext = {
- functionVersion: '$LATEST'
-}
+// const mockContext = {
+//  functionVersion: '$LATEST'
+// }
 it('consistent output', async () => {
- const lamdbdaRes = await index.handler(lambdaProxyMock, mockContext);
+ const lamdbdaRes = await index.handler(lambdaProxyMock);
  expect(() => {
   expect(lamdbdaRes).toMatchSchema(responseSchema)
  });

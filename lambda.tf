@@ -6,7 +6,7 @@ resource "aws_lambda_function" "main" {
  s3_key    = aws_s3_bucket_object.lambda_object.key
 
  runtime = "nodejs12.x"
- handler = "index.handler"
+ handler = "build/index.handler"
 
  source_code_hash = data.archive_file.lambda_radom_service.output_base64sha256
 
