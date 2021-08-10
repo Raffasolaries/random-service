@@ -6,11 +6,13 @@ resource "aws_lambda_function" "main" {
  s3_key    = aws_s3_bucket_object.lambda_object.key
 
  runtime = "nodejs12.x"
- handler = "build/index.handler"
+ handler = "dist/serverless.handler"
 
  source_code_hash = data.archive_file.lambda_radom_service.output_base64sha256
 
  role = aws_iam_role.lambda_exec.arn
+
+ memory_size = 1024
 }
 // creates logs group in CloudWatch consumed by the lambda function
 resource "aws_cloudwatch_log_group" "lambda_group" {

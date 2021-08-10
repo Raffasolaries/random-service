@@ -100,7 +100,7 @@ resource "aws_s3_bucket" "access_logs_bucket" {
 data "archive_file" "lambda_radom_service" {
  type = "zip"
 
- source_dir  = "${path.module}/random-service"
+ source_dir  = "${path.module}/src"
  output_path = "${path.module}/random-service.zip"
 }
 // actual lambda code object

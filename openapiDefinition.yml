@@ -9,7 +9,6 @@ x-amazon-apigateway-request-validators:
   params-only:
     validateRequestBody: true
     validateRequestParameters: true
-x-amazon-apigateway-request-validator: all
 paths:
   /distribution:
     post:

@@ -1,0 +1,70 @@
+openapi: "3.0.0"
+paths:
+  /distribution:
+    post:
+      operationId: "AppController_getRandom"
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RandomDto"
+      responses:
+        200:
+          description: "Distribution retrieved"
+        201:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApigatewayObject"
+info:
+  title: "Random Service"
+  description: "Distributes random numbers over a set of clusters"
+  version: "1.0.0"
+  contact: {}
+tags:
+  - name: "random"
+    description: ""
+servers: []
+components:
+  schemas:
+    RandomDto:
+      type: "object"
+      properties:
+        total:
+          type: "number"
+          description: "Total number to be distributed"
+          minimum: 1
+        clusters:
+          type: "number"
+          description: "Number of clusters on which distribute the total"
+          minimum: 1
+        minPercentage:
+          type: "number"
+          description: "Number of clusters on which distribute the total"
+      required:
+        - "total"
+        - "clusters"
+    ApigatewayObject:
+      type: "object"
+      properties: {}
+  x-amazon-apigateway-integrations:
+    distribution:
+      uri: "${lambda_arn}"
+      passthroughBehavior: "never"
+      httpMethod: "POST"
+      type: "aws_proxy"
+      payloadFormatVersion: "2.0"
+x-amazon-apigateway-request-validator: "all"
+x-amazon-apigateway-request-validators:
+  all:
+    validateRequestBody: true
+    validateRequestParameters: true
+  body-only:
+    validateRequestBody: true
+    validateRequestParameters: false
+  params-only:
+    validateRequestBody: false
+    validateRequestParameters: true

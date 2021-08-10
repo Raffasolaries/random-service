@@ -2,9 +2,7 @@
 resource "aws_apigatewayv2_api" "lambda" {
  name          = join("-", [var.app_name, "gw"])
  protocol_type = "HTTP"
- body = templatefile("${path.module}/openapiDefinition.yml", {
-  region: var.region,
-  app_name: var.app_name,
+ body = templatefile("${path.module}/openapi.yml", {
   lambda_arn: aws_lambda_function.main.invoke_arn
  })
 }
