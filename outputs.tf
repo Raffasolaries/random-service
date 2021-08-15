@@ -1,7 +1,7 @@
-output "lambda_bucket_name" {
- description = "Name of the S3 bucket used to store function code."
+output "lambda_ecr_repository_uri" {
+ description = "Lambda Docker container ECR repository URI"
 
- value = aws_s3_bucket.lambda_bucket.id
+ value = aws_ecr_repository.lambda.repository_url
 }
 
 output "function_name" {

@@ -1,24 +1,23 @@
 // creates lambda function which will execute the code
 resource "aws_lambda_function" "main" {
- function_name = var.app_name
+ function_name = join("-", [var.app_name, "lambda"])
 
- s3_bucket = aws_s3_bucket.lambda_bucket.id
- s3_key    = aws_s3_bucket_object.lambda_object.key
+ image_uri = "${aws_ecr_repository.lambda.repository_url}:latest"
 
  runtime = "nodejs12.x"
  handler = "dist/serverless.handler"
 
- source_code_hash = data.archive_file.lambda_radom_service.output_base64sha256
-
  role = aws_iam_role.lambda_exec.arn
 
  memory_size = 1024
-}
-// creates logs group in CloudWatch consumed by the lambda function
-resource "aws_cloudwatch_log_group" "lambda_group" {
- name = "/aws/lambda/${aws_lambda_function.main.function_name}"
 
- retention_in_days = 30
+ package_type = "Image"
+
+ depends_on = [aws_ecr_repository.lambda]
+
+ tags = {
+  Name = join("-", [var.app_name, "lambda"])
+ }
 }
 // creates the IAM role associated to the main lambda function
 resource "aws_iam_role" "lambda_exec" {
@@ -38,7 +37,7 @@ resource "aws_iam_role" "lambda_exec" {
   })
 }
 // lambda policy with basic execution policy
-resource "aws_iam_role_policy_attachment" "lambda_policy" {
+resource "aws_iam_role_policy_attachment" "assume_policy" {
  role       = aws_iam_role.lambda_exec.name
  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }

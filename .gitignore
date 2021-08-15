@@ -37,3 +37,6 @@ terraform.rc
 *.zip
 # node dependecies
 **/node_modules
+**/package-lock.json
+# vscode settings
+.vscode
