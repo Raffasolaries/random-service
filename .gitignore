@@ -37,6 +37,9 @@ terraform.rc
 *.zip
 # node dependecies
 **/node_modules
+**/dist
 **/package-lock.json
 # vscode settings
 .vscode
+# Mac OS files
+.DS_Store
