@@ -1,8 +1,7 @@
-import { Validator } from 'jsonschema';
-import { Event } from './classes';
-export const handler = async (event: Event) => {
- console.log('Event', event);
- // const Validator = require('jsonschema').Validator;
+module.exports.handler = async (event, context) => {
+ console.log('Event: ', event);
+ console.log('Context', context);
+ const Validator = require('jsonschema').Validator;
  const v = new Validator();
  const bodySchema = {
   id: '/bodySchema',
@@ -15,7 +14,7 @@ export const handler = async (event: Event) => {
   required: ['total', 'clusters']
  };
  // v.addSchema(bodySchema, '/bodySchema')
- const returnMapping = (statusCode: number, responseBody: object) => {
+ const returnMapping = (statusCode, responseBody) => {
   return {
    statusCode: statusCode,
    headers: {
@@ -27,7 +26,7 @@ export const handler = async (event: Event) => {
  const body = JSON.parse(event.body) ? JSON.parse(event.body) : {};
  let statusCode = 200;
  let responseBody = {};
- let items: number[] = [];
+ let items = [];
  let percentageValue = 0;
  let remaining = body.total;
  const validateRes = v.validate(body, bodySchema);

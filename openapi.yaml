@@ -2,6 +2,8 @@ openapi: "3.0.0"
 paths:
   /distribution:
     post:
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/distribution"
       operationId: "AppController_getRandom"
       parameters: []
       requestBody:
@@ -57,6 +59,14 @@ components:
       httpMethod: "POST"
       type: "aws_proxy"
       payloadFormatVersion: "2.0"
+      requestTemplates: 
+        application/json: |
+          "#set ($root=$input.json('$')) { \"total\": \"$root.total\", \"clusters\": \"$root.clusters\", \"minPercentage\": \"$root.minPercentage\" }"
+      responses:
+        2\\d{2}:
+          statusCode: 200
+        default:
+          statusCode: 400
 x-amazon-apigateway-request-validator: "all"
 x-amazon-apigateway-request-validators:
   all:
