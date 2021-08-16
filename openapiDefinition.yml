@@ -1,70 +1,27 @@
-openapi: 3.0.0
+openapi: "3.0.1"
 info:
-  title: ${app_name}
-  version: 1.0.0
-x-amazon-apigateway-request-validators:
-  all:
-    validateRequestBody: true
-    validateRequestParameters: false
-  params-only:
-    validateRequestBody: true
-    validateRequestParameters: true
+  title: "random-service-gw"
+  version: "2021-08-16 16:29:24UTC"
+servers:
+- url: "https://lgb3ari5g3.execute-api.eu-south-1.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "develop"
 paths:
   /distribution:
     post:
-      x-amazon-apigateway-request-validator: all
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RequestBodyModel"
-        required: true
+      operationId: "AppController_getRandom"
       responses:
-        200:
-          description: Result
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ResponseBodyModel"
-      x-amazon-apigateway-auth:
-        type: none
+        default:
+          description: "Default response for POST /distribution"
       x-amazon-apigateway-integration:
         $ref: "#/components/x-amazon-apigateway-integrations/distribution"
 components:
   x-amazon-apigateway-integrations:
     distribution:
-      uri: ${lambda_arn}
-      passthroughBehavior: never
-      httpMethod: POST
-      type: aws_proxy
-      payloadFormatVersion: 2.0
-      requestTemplates: 
-        application/json: |
-          "#set ($root=$input.json('$')) { \"total\": \"$root.total\", \"clusters\": \"$root.clusters\", \"minPercentage\": \"$root.minPercentage\" }"
-      responses:
-        2\\d{2}:
-          statusCode: 200
-        default:
-          statusCode: 400
-  schemas:
-    RequestBodyModel:
-      type: object
-      properties:
-        total:
-          type: integer
-        clusters:
-          type: integer
-        minPercentage:
-          type: integer
-      required:
-        - total
-        - clusters
-    ResponseBodyModel:
-      type: string
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
+      payloadFormatVersion: "2.0"
+      type: "aws_proxy"
+      httpMethod: "POST"
+      uri: "arn:aws:apigateway:eu-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-south-1:255994201635:function:random-service-lambda/invocations"
+      connectionType: "INTERNET"
+x-amazon-apigateway-importexport-version: "1.0"
